@@ -42,12 +42,15 @@ module.exports = (app) => {
   /**
   * Sign up page: post request
   */
-  app.get('/profile', isLoggedIn, (req, res) => {
+  app.get('/profile', isLoggedIn, then(async(req, res) => {
+    let posts = await Post.promise.find()
+    console.log(posts)
     res.render('profile.ejs', {
       user: req.user,
+      posts: posts,
       message: req.flash('error')
     })
-  })
+  }))
 
   app.get('/logout', (req, res) => {
     req.logout()
@@ -65,7 +68,11 @@ module.exports = (app) => {
       res.render('post.ejs', {
         post: {
           title: "",
-          content: ""
+          location: "",
+          tags: "",
+          url: "",
+          content: "",
+          postId: ""
         },
         verb: 'Create'
       })
@@ -102,11 +109,23 @@ module.exports = (app) => {
       let post = new Post()
 
       //TODO: understand this
-      let [{title: [title], content: [content]}, {image: [file]}] =
+      let [{
+        title: [title],
+        location: [location],
+        tags: [tags],
+        // date: [date],
+        url: [url],
+        content: [content]
+      }, {image: [file]}] =
         await new multiparty.Form().promise.parse(req)
 
       post.title = title
+      post.location = location
+      post.tags = tags
+      // post.date = date
+      post.url = url
       post.content = content
+
       post.image.data = await fs.promise.readFile(file.path)
       post.image.contentType = file.headers['content-type']
 
@@ -129,11 +148,24 @@ module.exports = (app) => {
       res.send(404, 'Not found')
     }
 
-    let [{title: [title], content: [content]}, {image: [file]}] =
+    let [{
+        title: [title],
+        location: [location],
+        tags: [tags],
+        // date: [date],
+        url: [url],
+        content: [content]
+      }, {image: [file]}] =
         await new multiparty.Form().promise.parse(req)
 
+
     post.title = title
+    post.location = location
+    post.tags = tags
+    // post.date = date
+    post.url = url
     post.content = content
+
     post.image.data = await fs.promise.readFile(file.path)
     post.image.contentType = file.headers['content-type']
 

@@ -14,12 +14,18 @@
             <input type="text" class="form-control" name="title" value="<%= post.title %>">
         </div>
         <div class="form-group">
-            <label>Vanity URL</label>
-            <input type="text" class="form-control" name="url">
+            <label>Location</label>
+            <input type="text" class="form-control" name="location" value="<%= post.location %>">
         </div>
         <div class="form-group">
             <label>Tags</label>
-            <input type="text" class="form-control" name="tags">
+            <input type="text" class="form-control" name="tags" value="<%= post.tags %>">
+        </div>
+
+
+        <div class="form-group">
+            <label>Vanity URL</label>
+            <input type="text" class="form-control" name="url" value="<%= post.url %>">
         </div>
         <div class="form-group">
             <label>Content</label>

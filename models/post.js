@@ -5,6 +5,13 @@ let PostSchema = mongoose.Schema({
     type: String,
     require: true
   },
+  location: String,
+  tags: String,
+  // date: {
+  //   type: Date,
+  //   default: Date.now
+  // },
+  url: String,
   content: {
     type: String,
     required: true
