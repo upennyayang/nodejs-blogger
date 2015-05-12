@@ -187,13 +187,13 @@ module.exports = (app) => {
 
   // -- Blog
 
-  app.get('/blog/:userId', then(async(req, res) => {
-    let userId = req.params.userId
-    let user = await User.promise.findOne({userId})
+  app.get('/blog/:username', then(async(req, res) => {
+    let username = req.params.username
+    let user = await User.promise.findOne({username: username})
     if(!user) res.render('error.ejs', {message: 'User not found.'})
-    console.log(userId)
+    console.log(username)
     res.render('blog.ejs', {
-      username: 'testusername'
+      username: username
     })
   }))
 

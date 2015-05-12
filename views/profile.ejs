@@ -1,21 +1,25 @@
 <% layout('layout') -%>
 <div class="container">
 
-    <div class="page-header text-center">
+    <div class="page-header">
+        <div class="pull-right">
+            <a href="/post" class="btn btn-primary">Create Post</a>
+            <a href="/blog/<%=user.username%>" class="btn btn-primary">View My Blog</a>
+            <a href="/logout" class="btn btn-default">Logout</a>
+        </div>
         <h1><span class="fa fa-user"></span> Profile Page</h1>
-        <a href="/post" class="btn btn-default btn-sm">Create Post</a>
-        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
     </div>
 
     <% if (typeof message !== 'undefined' && message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
 
-    <div class="row">
 
-        <div class="well">
-            <h3><span class="fa fa-laptop"></span> Local</h3>
-
+    <div class="panel">
+        <div class="panel-heading">
+          <span class="fa fa-laptop"></span> Local
+        </div>
+        <div class="panel-body">
             <p>
                 <strong>username</strong>: <%= user.username %><br>
                 <strong>email</strong>: <%= user.email %><br>
@@ -25,8 +29,38 @@
                 <strong>vanity url</strong>: <%= user.vanityUrl %><br>
                 <strong>tags</strong>: <%= user.tags %><br>
             </p>
-
         </div>
-
     </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            All Posts
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <th>Thumbnail</th>
+                    <th>Title</th>
+                    <th>Created Date</th>
+                    <th>Updated Date</th>
+                    <th>Delete</th>
+                    <th>Edit</th>
+                </tr>
+
+                <% for (var i=0; i < posts.length; i++ ) {%>
+                    <tr>
+                        <% var post = posts[i]; %>
+                        <td><img src="<%= post.image %>" style="width: 400px"/></td>
+                        <td><a href="/post/<%=post._id%>"><%= post.title %></a></td>
+                        <td><%= post.createdDate %></td>
+                        <td><%= post.updatedDate %></td>
+                        <td><a href="/post/delete?id=<%= post._id %>">Delete</a></td>
+                        <td><a href="/post/edit?id=<%= post._id %>">Edit</a></td>
+                    </tr>
+                <% } %>
+
+            </table>
+        </div>
+    </div>
+
 </div>
