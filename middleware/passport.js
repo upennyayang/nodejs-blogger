@@ -5,6 +5,9 @@ let User = require('../models/user')
 module.exports = (app) => {
   let passport = app.passport
 
+  /**
+  * strategy: log in
+  */
   passport.use(new LocalStrategy({
     // Use "email" field instead of "username"
     usernameField: 'username',
@@ -42,6 +45,9 @@ module.exports = (app) => {
     return await User.promise.findById(id)
   }))
 
+  /**
+  * strategy: sign up
+  */
   passport.use('local-signup', new LocalStrategy({
     // Use "email" field instead of "username"
     usernameField: 'email',
@@ -63,9 +69,9 @@ module.exports = (app) => {
       let user = new User()
       user.username = username
       user.email = email
-      user.password = await user.generateHash(password)
+      user.password = password
       user.blogTitle = title
-      user.blogDescription =  description
+      user.blogDescription = description
       return await user.save()
   }, {spread: true})))
 }
