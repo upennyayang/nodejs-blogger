@@ -56,7 +56,7 @@ module.exports = (app) => {
   }, nodeifyit(async (req, email, password) => {
       email = (email || '').toLowerCase()
 
-      let {username, title, description} = req.body
+      let {username, title, description, url, tags} = req.body
 
       if (await User.promise.findOne({username})) {
         return [false, {message: 'That username is already taken.'}]
@@ -72,6 +72,16 @@ module.exports = (app) => {
       user.password = password
       user.blogTitle = title
       user.blogDescription = description
-      return await user.save()
+      user.vanityUrl = url
+      user.tags = tags
+
+      user.salt = user.generateSalt()
+
+      try {
+        return await user.save()
+      } catch(e) {
+        return [false, {message: 'Please change to a valid formated username or password.'}]
+      }
+
   }, {spread: true})))
 }

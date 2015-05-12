@@ -29,13 +29,19 @@ module.exports = (app) => {
     failureRedirect: '/login',
     failureFlash: true
   }))
-  // process the signup form
+
+  /**
+  * Sign up page: post request
+  */
   app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/profile',
     failureRedirect: '/signup',
     failureFlash: true
   }))
 
+  /**
+  * Sign up page: post request
+  */
   app.get('/profile', isLoggedIn, (req, res) => {
     res.render('profile.ejs', {
       user: req.user,
@@ -49,7 +55,7 @@ module.exports = (app) => {
   })
 
   /**
-  * Post: get request
+  * Post page: get request
   */
   app.get('/post/:postId?', then(async(req, res) => {
     let postId = req.params.postId
@@ -57,7 +63,10 @@ module.exports = (app) => {
     /** Create mode */
     if(!postId) {
       res.render('post.ejs', {
-        post: {},
+        post: {
+          title: "",
+          content: ""
+        },
         verb: 'Create'
       })
       return
@@ -138,5 +147,13 @@ module.exports = (app) => {
     }
 
   }))
+
+  /**
+  * Top 25 passwords
+  */
+   app.get('/toppwds', (req, res) => {
+    res.render('toppwds.ejs')
+  })
+
 
 }

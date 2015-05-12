@@ -1,6 +1,7 @@
 let mongoose = require('mongoose')
 let bcrypt = require('bcrypt')
 let nodeify = require('bluebird-nodeify')
+let strings = require('../strings')
 
 require('songbird')
 
@@ -18,25 +19,39 @@ let userSchema = mongoose.Schema({
     required: true
   },
   blogTitle: String,
-  blogDescription: String
+  blogDescription: String,
+  vanityUrl: String,
+  tags: String,
+  salt: String
 })
 
+userSchema.methods.generateSalt = function() {
+  return bcrypt.genSaltSync(10)
+}
+
 userSchema.methods.generateHash = async function(password) {
-  return await bcrypt.promise.hash(password, 8)
+  let PEPPER = strings.PEPPER
+  return await bcrypt.promise.hash((password + this.salt + PEPPER), 8)
 }
 
 userSchema.methods.validatePassword = async function(password) {
-  return await bcrypt.promise.compare(password, this.password)
+  let PEPPER = strings.PEPPER
+  return await bcrypt.promise.compare(password + this.salt + PEPPER, this.password)
 }
 
-// remove comment after all done
+// Password restriction
 // userSchema.path('password').validate(pw => {
-//   console.log("here", pw)
+//   console.log("validating password", pw)
 //   return pw.length > 4 &&
 //     /[A-Z]/.test(pw) &&
 //     /[a-z]/.test(pw) &&
 //     /[0-9]/.test(pw)
 // })
+
+userSchema.path('username').validate(usr => {
+  console.log("validating username")
+  return /^\w*$/.test(usr)
+})
 
 // Validate password before save
 userSchema.pre('save', function(next) {

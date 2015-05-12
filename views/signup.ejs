@@ -1,14 +1,4 @@
-<!doctype html>
-<html>
-<head>
-    <title>Blogger</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <style>
-        body         { padding-top:80px; }
-    </style>
-</head>
-<body>
+<% layout('layout') -%>
 <div class="container">
 <div class="col-sm-6 col-sm-offset-3">
 
@@ -33,6 +23,8 @@
             <input type="password" class="form-control" name="password">
         </div>
 
+        <a href="/toppwds">Top 25 passwords of 2014</a>
+
         <h3>Optional:</h3>
         <div class="form-group">
             <label>Blog Title</label>
@@ -42,7 +34,14 @@
             <label>Blog Description</label>
             <input type="text" class="form-control" name="description">
         </div>
-
+        <div class="form-group">
+            <label>Vanity URL</label>
+            <input type="text" class="form-control" name="url">
+        </div>
+        <div class="form-group">
+            <label>Tags</label>
+            <input type="text" class="form-control" name="tags">
+        </div>
 
         <button type="submit" class="btn btn-warning btn-lg">Signup</button>
     </form>
@@ -54,5 +53,3 @@
 
 </div>
 </div>
-</body>
-</html>

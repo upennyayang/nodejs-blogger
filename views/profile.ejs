@@ -1,14 +1,4 @@
-<!doctype html>
-<html>
-<head>
-    <title>Blogger</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <style>
-        body         { padding-top:80px; word-wrap:break-word; }
-    </style>
-</head>
-<body>
+<% layout('layout') -%>
 <div class="container">
 
     <div class="page-header text-center">
@@ -32,11 +22,11 @@
                 <strong>password</strong>: <%= user.password %><br>
                 <strong>blog title</strong>: <%= user.blogTitle %><br>
                 <strong>blog description</strong>: <%= user.blogDescription %><br>
+                <strong>vanity url</strong>: <%= user.vanityUrl %><br>
+                <strong>tags</strong>: <%= user.tags %><br>
             </p>
 
         </div>
 
     </div>
 </div>
-</body>
-</html>

@@ -13,6 +13,7 @@
     "datauri": "^0.6.0",
     "dataurl": "^0.1.0",
     "ejs": "^2.3.1",
+    "ejs-locals": "^1.0.2",
     "express": "^4.0.0",
     "express-session": "^1.11.1",
     "express-then": "^1.0.2",
