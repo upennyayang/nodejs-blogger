@@ -1,15 +1,11 @@
 let multiparty = require('multiparty')
-// let util = require('util')
-let DataUri = require('datauri')
 let then = require('express-then')
 let fs = require('fs')
-let ejs= require('ejs')
+let imageurl = require('./utils/imageurl')
 let moment = require('moment')
 let isLoggedIn = require('./middleware/isLoggedIn')
 let Post = require('./models/post')
 let User = require('./models/user')
-
-
 
 require('songbird')
 
@@ -68,7 +64,7 @@ module.exports = (app) => {
   app.get('/post/:postId?', then(async(req, res) => {
     let postId = req.params.postId
 
-    /* Create mode */
+    /* Create a new post */
     if(!postId) {
       res.render('post.ejs', {
         post: {
@@ -78,39 +74,31 @@ module.exports = (app) => {
           date: moment().format("YYYY-MM-DD"),
           url: "",
           content: "",
-          postId: ""
+          _id: ""
         },
         verb: 'Create'
       })
       return
     }
 
-    /* Retrive from DB */
+    /* Edit an exisiting post */
     let post = await Post.promise.findById(postId)
-    if(!post) res.send(404, 'Not found')
-
-    let dataUri = new DataUri()
-    let image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
-
-    post.postId = postId
-    console.log(post.postId, "erererer")
+    if(!post) res.render("error.ejs", {message: "Post not found."})
 
     res.render('post.ejs', {
       post: post,
-      verb: 'Edit',
-      image: `data: ${post.image.contentType};base64, ${image.base64}`
+      verb: 'Edit'
     })
   }))
 
   app.post('/post/:postId?', then(async(req, res) => {
     let postId = req.params.postId
-    console.log("PostID: ", postId)
-    /** Create mode */
-    if(!postId) {
-      console.log("Creating new post")
+
+    /* Create a new post: sumbit */
+    if(!postId || postId === 'undefined') {
+      console.log("!!!!!!!Submit a new post, postId: ", postId)
       let post = new Post()
 
-      //TODO: understand this
       let [{
         title: [title],
         location: [location],
@@ -127,59 +115,68 @@ module.exports = (app) => {
       post.date = date
       post.url = url
       post.content = content
-
-      post.image.data = await fs.promise.readFile(file.path)
-      post.image.contentType = file.headers['content-type']
-
-      // console.log(file, title, content, post.image.contentType)
-      await post.save()
+      post.image = imageurl(
+        file.headers['content-type'],
+        await fs.promise.readFile(file.path)
+      )
 
       try {
-          res.redirect('/blog/' + encodeURI(req.user.blogTitle))
+        await post.save()
+        res.redirect('/blog/' + encodeURI(req.user.blogTitle))
       } catch(e) {
         res.redirect('/')
       }
       return
     }
 
-    console.log('Editing post.')
+    console.log("!!!!!!!Submit a existing post, postId: ", postId)
 
-    /** Edit mode */
+    /* Edit an existing post: sumbit */
     let post = await Post.promise.findById(postId)
-    if(!post) {
-      res.send(404, 'Not found')
-    }
+    if(!post) res.render('error.ejs', 'Post not found.')
 
     let [{
         title: [title],
         location: [location],
         tags: [tags],
-        // date: [date],
+        date: [date],
         url: [url],
         content: [content]
       }, {image: [file]}] =
         await new multiparty.Form().promise.parse(req)
 
-
     post.title = title
     post.location = location
     post.tags = tags
-    // post.date = date
+    post.date = date
     post.url = url
     post.content = content
-
-    post.image.data = await fs.promise.readFile(file.path)
-    post.image.contentType = file.headers['content-type']
-
-    await post.save()
+    post.image = imageurl(
+      file.headers['content-type'],
+      await fs.promise.readFile(file.path)
+    )
 
     try {
+      await post.save()
       res.redirect('/blog/' + encodeURI(req.user.blogTitle))
     } catch(e) {
       console.log(e)
       res.redirect('/')
     }
 
+  }))
+
+
+  app.delete('/post/:postId?', then(async(req, res) => {
+    let postId = req.params.postId
+    console.log('Deleting post: ', postId)
+
+    if(!postId) {
+      res.error('error.ejs', {message: 'There is no post you requested.'})
+    }
+
+    await Post.promise.findOneAndRemove(postId)
+    res.redirect('/profile')
   }))
 
   app.get('/toppwds', (req, res) => {

@@ -6,3 +6,4 @@ module.exports = (app) => {
     return moment(date).format("YYYY-MM-DD HH:mm")
   }
 }
+

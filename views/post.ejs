@@ -1,6 +1,6 @@
 <% layout('layout') -%>
 <div class="container">
-<div class="col-sm-6 col-sm-offset-3">
+
 
     <h1><span class="fa fa-sign-in"></span> <%= verb %> Post</h1>
 
@@ -10,42 +10,57 @@
 
     <div class="panel">
         <div class="panel-body">
-            <form action="/post/<%= post.postId %>" enctype="multipart/form-data" method="post">
+            <form action="/post/<%= post._id %>" enctype="multipart/form-data" method="post">
+
+                <h3>Required</h3>
                 <div class="form-group">
                     <label>Title</label>
                     <input type="text" class="form-control" name="title" value="<%= post.title %>">
                 </div>
                 <div class="form-group">
-                    <label>Location</label>
-                    <input type="text" class="form-control" name="location" value="<%= post.location %>">
-                </div>
-                <div class="form-group">
-                    <label>Tags</label>
-                    <input type="text" class="form-control" name="tags" value="<%= post.tags %>">
-                </div>
-                <div class="form-group">
-                    <label>Date</label>
-                    <input type="date" class="form-control" name="date" value="<%= post.date %>">
-                </div>
-                <div class="form-group">
-                    <label>Vanity URL</label>
-                    <input type="text" class="form-control" name="url" value="<%= post.url %>">
-                </div>
-                <div class="form-group">
                     <label>Content</label>
-                    <input type="text" class="form-control" name="content" value="<%= post.content %>">
+                    <textarea rows="9" cols="50"type="text" class="form-control" name="content"><%= post.content %></textarea>
                 </div>
-                <div class="form-group">
-                    <label>Image</label>
-                    <% if (post.image) { %>
-                        <img src="<%= image %>" style="width: 400px"/>
-                     <% } %>
-                    <input type="file" class="form-control" name="image">
+
+                <br>
+
+                <h3>Optional</h3>
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" class="form-control" name="location" value="<%= post.location %>">
+                        </div>
+                        <div class="form-group">
+                            <label>Tags</label>
+                            <input type="text" class="form-control" name="tags" value="<%= post.tags %>">
+                        </div>
+                        <div class="form-group">
+                            <label>Image</label>
+                            <img src="<%= post.image %>" style="width: 400px"/>
+                            <input type="file" class="form-control" name="image">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" class="form-control" name="date" value="<%= post.date %>">
+                        </div>
+                        <div class="form-group">
+                            <label>Vanity URL</label>
+                            <input type="text" class="form-control" name="url" value="<%= post.url %>">
+                        </div>
+                    </div>
                 </div>
+
+                <br>
 
                 <button type="submit" class="btn btn-primary"><%= verb %> Post</button>
             </form>
         </div>
     </div>
-</div>
+
 </div>
