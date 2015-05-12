@@ -15,11 +15,11 @@ let PostSchema = new Schema({
   },
   location: String,
   tags: String,
-  createdDate: {
+  releaseDate: {
     type: Date,
     default: Date.now
   },
-  updatedDate: {
+  modificationDate: {
     type: Date,
     default: Date.now
   },

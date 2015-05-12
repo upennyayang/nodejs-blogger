@@ -9,6 +9,7 @@ let flash = require('connect-flash')
 let mongoose = require('mongoose')
 let passportMiddleware = require('./middleware/passport')
 let routes = require('./routes')
+let helpers = require('./middleware/helpers')
 require('songbird')
 
 // const NODE_ENV = process.env.NODE_ENV
@@ -60,6 +61,7 @@ app.use( function (req, res, next) {
 // Configure passport strategies & routes
 passportMiddleware(app)
 routes(app)
+helpers(app)
 
 // connect to database
 mongoose.connect('mongodb://127.0.0.1:27017/blogger')
