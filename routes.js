@@ -3,8 +3,11 @@ let multiparty = require('multiparty')
 let DataUri = require('datauri')
 let then = require('express-then')
 let fs = require('fs')
+let moment = require('moment')
 let isLoggedIn = require('./middleware/isLoggedIn')
 let Post = require('./models/post')
+let User = require('./models/user')
+
 
 
 require('songbird')
@@ -16,13 +19,12 @@ module.exports = (app) => {
     res.render('index.ejs')
   })
 
+  // -- Log In
+
   app.get('/login', (req, res) => {
     res.render('login', {message: req.flash('error')})
   })
 
-  app.get('/signup', (req, res) => {
-    res.render('signup', {message: req.flash('error')})
-  })
 
   app.post('/login', passport.authenticate('local', {
     successRedirect: '/profile',
@@ -30,18 +32,25 @@ module.exports = (app) => {
     failureFlash: true
   }))
 
-  /**
-  * Sign up page: post request
-  */
+  app.get('/logout', (req, res) => {
+    req.logout()
+    res.redirect('/')
+  })
+
+  // -- Sign up
+
+  app.get('/signup', (req, res) => {
+    res.render('signup', {message: req.flash('error')})
+  })
+
   app.post('/signup', passport.authenticate('local-signup', {
     successRedirect: '/profile',
     failureRedirect: '/signup',
     failureFlash: true
   }))
 
-  /**
-  * Sign up page: post request
-  */
+  // -- Profile
+
   app.get('/profile', isLoggedIn, then(async(req, res) => {
     let posts = await Post.promise.find()
     console.log(posts)
@@ -52,24 +61,20 @@ module.exports = (app) => {
     })
   }))
 
-  app.get('/logout', (req, res) => {
-    req.logout()
-    res.redirect('/')
-  })
 
-  /**
-  * Post page: get request
-  */
+  // -- Post
+
   app.get('/post/:postId?', then(async(req, res) => {
     let postId = req.params.postId
 
-    /** Create mode */
+    /* Create mode */
     if(!postId) {
       res.render('post.ejs', {
         post: {
           title: "",
           location: "",
           tags: "",
+          date: moment().format("YYYY-MM-DD"),
           url: "",
           content: "",
           postId: ""
@@ -79,12 +84,11 @@ module.exports = (app) => {
       return
     }
 
-    /** Retrive from DB */
+    /* Retrive from DB */
     let post = await Post.promise.findById(postId)
     if(!post) res.send(404, 'Not found')
 
     let dataUri = new DataUri()
-    // console.log(post.image.contentType)
     let image = dataUri.format('.' + post.image.contentType.split('/').pop(), post.image.data)
 
     post.postId = postId
@@ -97,9 +101,6 @@ module.exports = (app) => {
     })
   }))
 
-  /**
-  * Post: post request
-  */
   app.post('/post/:postId?', then(async(req, res) => {
     let postId = req.params.postId
     console.log("PostID: ", postId)
@@ -113,7 +114,7 @@ module.exports = (app) => {
         title: [title],
         location: [location],
         tags: [tags],
-        // date: [date],
+        date: [date],
         url: [url],
         content: [content]
       }, {image: [file]}] =
@@ -122,7 +123,7 @@ module.exports = (app) => {
       post.title = title
       post.location = location
       post.tags = tags
-      // post.date = date
+      post.date = date
       post.url = url
       post.content = content
 
@@ -180,12 +181,20 @@ module.exports = (app) => {
 
   }))
 
-  /**
-  * Top 25 passwords
-  */
-   app.get('/toppwds', (req, res) => {
+  app.get('/toppwds', (req, res) => {
     res.render('toppwds.ejs')
   })
 
+  // -- Blog
+
+  app.get('/blog/:userId', then(async(req, res) => {
+    let userId = req.params.userId
+    let user = await User.promise.findOne({userId})
+    if(!user) res.render('error.ejs', {message: 'User not found.'})
+    console.log(userId)
+    res.render('blog.ejs', {
+      username: 'testusername'
+    })
+  }))
 
 }
