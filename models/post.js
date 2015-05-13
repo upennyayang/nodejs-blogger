@@ -7,6 +7,10 @@ let CommentSchema = new Schema({
   date: Date
 })
 
+let RatingSchema = new Schema({
+  rating: Number
+})
+
 let PostSchema = new Schema({
   id: mongoose.Schema.ObjectId,
   title: {
@@ -28,8 +32,9 @@ let PostSchema = new Schema({
     type: String,
     required: true
   },
-  image: String
-  // comments: [CommentSchema]
+  image: String,
+  comments: [CommentSchema],
+  ratings: [RatingSchema]
 })
 
 module.exports = mongoose.model('Post', PostSchema)

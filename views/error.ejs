@@ -1,9 +1,11 @@
 <% layout('layout') -%>
 <div class="container">
   <div class="well">
-    <%= message %>
+    <% if(typeof message !== 'undefined' && message.length > 0) { %>
+      <%= message %>
+    <% } %>
 
-    <% if(login) { %>
+    <% if(typeof login !== 'undefined') { %>
         <a href="/login">please log in. </a>
     <% } %>
 
