@@ -46,7 +46,7 @@
         }
 
         .panel {
-          padding: 15px;
+          padding: 10px;
         }
         h1, h2, h3 {
           font-size: 25px;
@@ -79,6 +79,33 @@
           max-height: 80px;
           max-width: 80px;
         }
+
+        /* post */
+        .meta {
+          font-size: 15px;
+          color: #676767;
+          margin: 10px 0px;
+          padding: 0;
+          display: block;
+        }
+        .meta>.meta-item {
+          display: block;
+          float: left;
+          margin-right: 30px;
+          /*width: 15px;*/
+        }
+        .container.sm {
+          max-width: 50%;
+        }
+        .container.md {
+          max-width: 80%;
+        }
+        .post-heading {
+          text-align: center;
+          font-size: 40px;
+          color: black;
+        }
+
     </style>
     <script src="//fonts.walmart.com/fqp0lia.js"></script>
     <script>try{Typekit.load();}catch(e){}</script>
@@ -88,7 +115,7 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-body" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -96,12 +123,11 @@
           </button>
           <a class="navbar-brand" href="/">Blogger</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
+        <div id="navbar-body" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="/login">Login</a></li>
             <li><a href="/signup">Signup</a></li>
-            <li><a href="/post">Create Post</a></li>
-            <li><a href="/post">View Post</a></li>
+            <li><a href="/blog">Blog</a></li>
             <li><a href="/profile">Profile</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">

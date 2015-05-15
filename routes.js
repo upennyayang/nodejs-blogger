@@ -49,7 +49,8 @@ module.exports = (app) => {
   // -- Profile
 
   app.get('/profile', isLoggedIn, then(async(req, res) => {
-    let posts = await Post.promise.find()
+    let username = req.user.username
+    let posts = await Post.promise.find({username: username})
     console.log(posts)
     res.render('profile.ejs', {
       user: req.user,
@@ -93,6 +94,7 @@ module.exports = (app) => {
 
   app.post('/post/:postId?', then(async(req, res) => {
     let postId = req.params.postId
+    let username = req.user.username
 
     /* Create a new post: sumbit */
     if(!postId || postId === 'undefined') {
@@ -109,6 +111,7 @@ module.exports = (app) => {
       }, {image: [file]}] =
         await new multiparty.Form().promise.parse(req)
 
+      post.username = username,
       post.title = title
       post.location = location
       post.tags = tags
@@ -129,7 +132,7 @@ module.exports = (app) => {
       return
     }
 
-    console.log("!!!!!!!Submit a existing post, postId: ", postId)
+    console.log("!!!!!!!Submit an existing post, postId: ", postId)
 
     /* Edit an existing post: sumbit */
     let post = await Post.promise.findById(postId)
@@ -145,6 +148,7 @@ module.exports = (app) => {
       }, {image: [file]}] =
         await new multiparty.Form().promise.parse(req)
 
+    post.username = username,
     post.title = title
     post.location = location
     post.tags = tags
@@ -183,15 +187,46 @@ module.exports = (app) => {
     res.render('toppwds.ejs')
   })
 
+  app.get('/posts', then(async(req, res) => {
+    let posts = await Post.promise.find({})
+    console.log(posts)
+    res.render('posts.ejs', {posts: posts})
+  }))
+
   // -- Blog
 
   app.get('/blog/:username', then(async(req, res) => {
     let username = req.params.username
-    let user = await User.promise.findOne({username: username})
-    if(!user) res.render('error.ejs', {message: 'User not found.'})
-    console.log(username)
+    let posts = await Post.promise.find({username: username})
+    if(!posts || posts.length === 0) res.render('error.ejs', {message: username + ' has no posts yet.'})
+
+    console.log("Finding blog for username[username]: ", username)
+    console.log("Finding blog for username[result]: ", posts.length)
     res.render('blog.ejs', {
-      username: username
+      username: username,
+      posts: posts
+    })
+  }))
+
+  // My posts
+  app.get('/blog', isLoggedIn, then(async(req, res) => {
+    let username = req.user.username
+    res.redirect('/blog/' + username)
+  }))
+
+  // One post
+  app.get('/blog/:username/:post', then(async(req, res) => {
+    let username = req.params.username
+    let title = req.params.post
+
+    let post = await Post.promise.find({
+      $and: [{username: username}, {title: title}]
+    })
+    if(!post) res.render('error.ejs', {message: 'User not found.'})
+
+    res.render('blog.ejs', {
+      username: username,
+      posts: post
     })
   }))
 

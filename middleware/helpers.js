@@ -11,7 +11,7 @@ module.exports = (app) => {
   }
 
   app.locals.aggregateRating = function(ratings) {
-    return ratings ? ratings.length : 0
+    return ratings ? ratings.length : "no ratings"
   }
 }
 

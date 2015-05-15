@@ -2,17 +2,22 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
 let CommentSchema = new Schema({
-  title: String,
-  body: String,
-  date: Date
+  username: String,
+  content: String,
+  postLink: String,
+  commentDate: String,
+  upvoteCount: Number,
+  downvoteCount: Number
 })
 
 let RatingSchema = new Schema({
+  username: String,
   rating: Number
 })
 
 let PostSchema = new Schema({
   id: mongoose.Schema.ObjectId,
+  username: String,
   title: {
     type: String,
     require: true
