@@ -51,10 +51,18 @@ module.exports = (app) => {
   app.get('/profile', isLoggedIn, then(async(req, res) => {
     let username = req.user.username
     let posts = await Post.promise.find({username: username})
-    console.log(posts)
+    let comments = await Post.promise.find({
+      comments: {
+        $elemMatch: {
+          username: username
+        }
+      }
+    })
+
     res.render('profile.ejs', {
       user: req.user,
       posts: posts,
+      comments: comments,
       message: req.flash('error')
     })
   }))
@@ -62,7 +70,7 @@ module.exports = (app) => {
 
   // -- Post
 
-  app.get('/post/:postId?', then(async(req, res) => {
+  app.get('/post/:postId?', isLoggedIn, then(async(req, res) => {
     let postId = req.params.postId
 
     /* Create a new post */
@@ -190,7 +198,10 @@ module.exports = (app) => {
   app.get('/posts', then(async(req, res) => {
     let posts = await Post.promise.find({})
     console.log(posts)
-    res.render('posts.ejs', {posts: posts})
+    res.render('posts.ejs', {
+      posts: posts,
+      username: req.user ? req.user.username : null
+    })
   }))
 
   // -- Blog
@@ -209,17 +220,44 @@ module.exports = (app) => {
     })
   }))
 
-  //Comment
-  app.post('/comment', then(async(req, res) => {
-    let {postId, comment} = req.body
 
-    console.log(req.url)
+  // My posts
+  app.get('/blog', isLoggedIn, then(async(req, res) => {
+    let username = req.user.username
+    res.redirect('/blog/' + username)
+  }))
+
+  // One post
+  app.get('/blog/:blogger/:postId', then(async(req, res) => {
+    let blogger = req.params.blogger
+    let postId = req.params.postId
+
+    let post = await Post.promise.find({
+      $and: [{_id: postId}, {username: blogger}]
+    })
+    if(!post) res.render('error.ejs', {message: 'User not found.'})
+
+    res.render('blog.ejs', {
+      posts: post,  // Only shows one post
+      blogger: blogger, // The blogger who wrote the post
+      username: req.user ? req.user.username : null // The user who views the post
+    })
+  }))
+
+  // - Comment
+
+  app.post('/comment', then(async(req, res) => {
+    let {postId, blogger, comment} = req.body
+    let username = req.user.username
+
     await Post.promise.update({_id: postId}, {$push: {comments: {
-      username: req.user.username,
-      text: comment
+      username: username,
+      blogger: blogger,
+      text: comment,
+      link: `/blog/${blogger}/${postId}`
     }}})
 
-    res.redirect('/blog')
+    res.redirect(`/blog/${blogger}/${postId}`)
   }))
 
    app.post('/login-comment', passport.authenticate('login-comment', {
@@ -234,28 +272,51 @@ module.exports = (app) => {
     failureFlash: true
   }))
 
+  // - Public Profile
 
-
-  // My posts
-  app.get('/blog', isLoggedIn, then(async(req, res) => {
-    let username = req.user.username
-    res.redirect('/blog/' + username)
-  }))
-
-  // One post
-  app.get('/blog/:blogger/:post', then(async(req, res) => {
+  app.get('/public/:blogger?', isLoggedIn, then(async(req, res) => {
     let blogger = req.params.blogger
-    let title = req.params.post
+    let username = req.user.username
+    let user
+    let posts
+    let comments
 
-    let post = await Post.promise.find({
-      $and: [{username: blogger}, {title: title}]
+    // create a public profile
+    if(!blogger || blogger === 'undefined') {
+      res.redirect('/public/' + username)
+    }
+
+    // get public profile
+    user = await User.promise.findOne({username: blogger})
+    if(!user) {
+      res.render('error.ejs', {message: 'Cannot find this blogger.'})
+    }
+
+    comments = await Post.promise.find({
+      comments: {
+        $elemMatch: {
+          username: username
+        }
+      }
     })
-    if(!post) res.render('error.ejs', {message: 'User not found.'})
+    console.log(comments)
 
-    res.render('blog.ejs', {
-      blogger: blogger,
-      posts: post
+    posts = await Post.promise.find({username: blogger})
+    res.render('public.ejs', {
+      username: username,
+      user: user,
+      posts: posts,
+      comments: comments
     })
   }))
 
+  // link of the public profile
+  // no need to be logged in
+  app.get('/pp/:blogger', then(async(req, res) => {
+    let blogger = req.params.blogger
+    res.render('public.ejs', {
+      blogger: blogger,
+      username: req.user ? req.user.username : null
+    })
+  }))
 }

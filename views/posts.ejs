@@ -1,71 +1,98 @@
 <% layout('layout') -%>
 
-<div class="container sm">
+<div class="container md">
 
-    <h1><span class="fa fa-book"></span> All Posts</h1>
 
-  <div class="panel">
-    <div class="panel-body">
-      <% for(var i = 0; i < posts.length; i ++) { %>
-        <% var post = posts[i]; %>
+    <h1><span class="fa fa-book"></span> All Posts by All Bloggers
+    <a href="/post" class="btn btn-primary pull-right">New Post</a></h1>
 
-        <h1 class="post-heading"><%= post.title %></h1>
+    <ol class="breadcrumb">
+      <li><a href="/profile">Home</a></li>
 
-        <p class="lead"><%= post.title %>By <a href="/blogger<%= post.username %>"></a></p>
+      <% if(typeof posts !== 'undefined'  && posts.length <= 1) { %>
+        <li class="active"> <a href="/blog/<%= blogger %>/<%= posts[0]._id %>">Title: <%= posts[0].title %></a></li>
+      <% } %>
+    </ol>
 
-        <div class="meta">
-          <div class="meta-item"><%= post.releaseDate %></div>
-          <div class="meta-item">Posted by <%= post.username %></div>
-        </div>
+  <% for(var i = 0; i < posts.length; i ++) { %>
+    <% var post = posts[i]; %>
 
-        <hr>
+    <div class="panel">
+      <div class="panel-body">
 
-        <img class="img-responsive" src="<%= post.image %>" />
-        <p><%= post.content %></p>
+          <h1 class="post-heading"><a href="/blog/<%= post.username %>/<%= post._id %>"><%= post.title %></a></h1>
 
-        <hr>
 
-        <!-- comments -->
-        <h3> Leave a comment </h3>
-        <p>Sign in with</p>
-        </p>
+          <p class="post-date"><%= shortDate(post.releaseDate) %></p>
+          <p class="post-author">Posted by <%= post.username %></p>
+          <hr>
 
-        <form action="/login" method="post">
-          <div class="col-lg-3">
-            <div class="form-group">
+          <% if(post.image) { %>
+            <img class="post-image" src="<%= post.image %>" />
+          <% } else { %>
+            <div class="well">No Image for This Post</div>
+          <% } %>
+
+          <p class="post-content"><%= post.content %></p>
+
+          <hr>
+
+          <!-- COMMENTS -->
+          <h3> Leave a comment </h3>
+
+          <!-- The user is not logged in -->
+          <% if(!username) { %>
+            <form action="/login-comment" method="post">
+              <div class="form-group">
                 <label>Username or Email</label>
                 <input type="text" class="form-control" name="username">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password">
-            </div>
-          </div>
-          <div class="col-lg-9">
+              </div>
+              <div class="form-group">
+                  <label>Password</label>
+                  <input type="password" class="form-control" name="password">
+              </div>
+
+          <!-- The user is already logged in -->
+          <% } else { %>
+            <form action="/comment" method="post">
+              <input type="hidden" name="username" value="<%= username %>" />
+          <% } %>
+
+            <input type="hidden" name="blogger" value="<%= post.username %>"></input>
+            <input type="hidden" name="postId" value="<%= post._id %>"></input>
             <label>Comment</label>
-            <textarea rows="4" cols="50"type="text" class="form-control" name="content"><%= post.content %></textarea>
-          </div>
-          <br><br>
+            <textarea rows="4" cols="50"type="text" class="form-control" name="comment"></textarea>
+            <br>
+            <button type="submit" class="btn btn-primary">
+              <% if(!username) { %>Log in &<% } %> Post
+            </button>
+          </form>
 
-          <button type="submit" class="btn btn-primary">Log in & Post</button>
-          </div>
-        </form>
+          <hr>
+          <!-- comments -->
+          <ul class="media-list">
+            <% var comments = post.comments; %>
+            <% for(var j = 0; j < comments.length; j ++) { %>
+              <% var comment = comments[j]; %>
+              <li class="media">
+                <div class="media-left">
+                  <a href="#"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
+                </div>
+                <div class="media-body">
+                  <h4 class="media-heading"><%= comment.username %> &nbsp; <small> <%= shortDate(comment.date) %> </small></h4>
+                  <p><%= comment.text %></p>
+                </div>
+              </li>
 
-        <hr>
-
-        <div class="media">
-          <div class="pull-left">
-            <div class="media-object">ytian</div>
-          </div>
-          <div class="media-body">
-            <h4 class="media-heading">Thi is  agood post <small>media date</small></h4>
-            This is the content of the post
-          </div>
-        </div>
-
-      <% } %>
-    </div>
-  </div>
+            <% } %>
+          </ul>
+          <!-- ./COMMENTS -->
 
 
-</div>
+      </div><!-- END .panel-body -->
+    </div><!-- END .panel -->
+  <% } %> <!-- END posts loop -->
+
+</div><!-- END .container -->
+
+

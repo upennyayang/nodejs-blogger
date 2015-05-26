@@ -27,6 +27,7 @@ let PostSchema = new Schema({
   comments: [{
     username: String,
     text: String,
+    link: String,
     date: {type: Date, default: Date.now},
     upvote: Number,
     downvote: Number

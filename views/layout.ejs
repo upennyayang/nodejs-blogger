@@ -25,7 +25,7 @@
           width: 800px;
          }
         .well {
-          /*background-color: #d3e9ff;*/
+          background-color: #fff;
           text-align: center;
           font-size: 40px;
           line-height: 48px;
@@ -38,7 +38,7 @@
         }
         .panel-heading {
           margin: 5px 0 0px 0;
-          font-size: 20px;
+          font-size: 22px;
           font-weight: 600;
           letter-spacing: 0.5px;
           color: #007dc6;
@@ -46,7 +46,7 @@
         }
 
         .panel {
-          padding: 10px;
+          padding: 20px;
         }
         h1, h2, h3 {
           font-size: 25px;
@@ -55,6 +55,10 @@
           color: rgb(0, 125, 198);
           line-height: 40px;
           font-family: myriad-pro, "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+        }
+        a:hover {
+          text-decoration: none;
+          font-weight: 500;
         }
 
         h3 {
@@ -93,6 +97,9 @@
           color: black;
           margin-bottom: 22px;
         }
+        .post-heading a {
+          color: black;
+        }
         .post-author {
           text-align: center;
           text-transform: uppercase;
@@ -107,11 +114,18 @@
         .post-content {
           margin: 0 auto;
           font-size: 18px;
+          line-height: 32px;
         }
         .post-image {
           display: block;
+          margin: 30px auto;
+          width: 60%;
+        }
+        .post-comment a{
+          /*color: black;*/
+          font-style: italic;
           margin: 0 auto;
-          width: 50%;
+          font-size: 16px;
         }
 
         .media-left {
@@ -138,8 +152,10 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/login">Login</a></li>
             <li><a href="/signup">Signup</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/profile">Profile</a></li>
+            <li><a href="/posts">All Posts</a></li>
+             <li><a href="/blog">My Blog</a></li>
+            <li><a href="/profile">My Profile</a></li>
+            <li><a href="/public">Public Profile</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/logout">Logout</a></li>

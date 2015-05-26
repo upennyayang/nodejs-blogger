@@ -7,6 +7,7 @@
             <a href="/post" class="btn btn-default">Create Post</a>
             <a href="/blog/<%=user.username%>" class="btn btn-default">View My Blog</a>
             <a href="/posts" class="btn btn-default">View All Posts</a>
+            <a href="/public/<%=user.username%>" class="btn btn-default">My Public Profile</a>
         </div>
         <h1><span class="fa fa-user"></span> My Profile</h1>
     </div>
@@ -42,123 +43,114 @@
         </div>
     </div>
 
-    <div class="panel">
-        <div class="panel-heading">
-            My Posts
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th class="image">Thumbnail</th>
-                        <th>Title</th>
-                        <th>Location</th>
-                        <th>Tags</th>
-                        <th>Url</th>
-                        <th>Created Date</th>
-                        <th>Updated Date</th>
-                        <th>Comments Count</th>
-                        <th>Aggregate Rating</th>
-                        <th>Delete</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (var i=0; i < posts.length; i++ ) {%>
-                        <% var post = posts[i]; %>
-                        <tr data-postid="<%= post._id %>">
-                            <td class="detail"><img src="<%= post.image %>" style="width: 400px"/></td>
-                            <td class="detail"><a href="/post/<%=post._id%>"><%= post.title %></a></td>
-                            <td class="detail"><%= post.location %></td>
-                            <td class="detail"><%= post.tags %></td>
-                            <td class="detail"><%= post.url %></td>
-                            <td class="detail"><%= prettyDate(post.releaseDate) %></td>
-                            <td class="detail"><%= prettyDate(post.modificationDate) %></td>
-                            <td><%=commentCount( post.comment )%></td>
-                            <td><%=aggregateRating( post.rating )%></td>
-                            <td class="delete"><a href="#">Delete</a></td>
-                            <td class="edit"><a href="/post/<%= post._id %>">Edit</a></td>
+    <% if(typeof posts === 'undefined' || posts.length === 0) { %>
+      <div class="well">I have no posts yet. <a href="/post"> Create a new one.</a></div>
+    <% } else { %>
+
+
+        <div class="panel">
+            <div class="panel-heading">
+                My Posts
+            </div>
+            <div class="panel-body">
+                <table id="table-posts" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="image">Thumbnail</th>
+                            <th>Title</th>
+                            <th>Location</th>
+                            <th>Tags</th>
+                            <th>Url</th>
+                            <th>Created Date</th>
+                            <th>Updated Date</th>
+                            <th>Comments Count</th>
+                            <th>Aggregate Rating</th>
+                            <th>Delete</th>
+                            <th>Edit</th>
                         </tr>
-                    <% } %>
-                </tbody>
-                <script>
-                    $(".table>tbody>tr>td.detail").on("click", function(e){
-                        var postId = $(this).closest("tr").data("postid");
-                        window.open("/post/" + postId);
-                        //window.location.href = "/post/" + postId;
-                    })
-
-                    $(".table>tbody>tr>td.delete").on("click", function(e) {
-                        e.preventDefault();
-
-                        var postId = $(this).closest("tr").data("postid");
-                        console.log($(this).closest("tr"));
-                        $.ajax({
-                            url: "/post/" + postId,
-                            type: "DELETE",
-                            success: function (data) {
-                                console.log("deleted: " + data);
-                                window.location.href  = "/profile";
-                            }
-                        });
-                    })
-
-                </script>
-            </table>
+                    </thead>
+                    <tbody>
+                        <% for (var i=0; i < posts.length; i++ ) {%>
+                            <% var post = posts[i]; %>
+                            <tr data-postid="<%= post._id %>">
+                                <td class="detail"><img src="<%= post.image %>" style="width: 400px"/></td>
+                                <td class="detail"><a href="/post/<%=post._id%>"><%= post.title %></a></td>
+                                <td class="detail"><%= post.location %></td>
+                                <td class="detail"><%= post.tags %></td>
+                                <td class="detail"><%= post.url %></td>
+                                <td class="detail"><%= prettyDate(post.releaseDate) %></td>
+                                <td class="detail"><%= prettyDate(post.modificationDate) %></td>
+                                <td><%=commentCount( post.comments )%></td>
+                                <td><%=aggregateRating( post.ratings )%></td>
+                                <td class="delete"><a href="#">Delete</a></td>
+                                <td class="edit"><a href="/post/<%= post._id %>">Edit</a></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="panel">
-        <div class="panel-heading">
-            Latest Comments
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Content</th>
-                        <th>Link</th>
-                        <th>Comment Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (var i=0; i < posts.length; i++ ) {%>
-                        <% var post = posts[i]; %>
-                        <tr data-postid="<%= post._id %>">
-                            <td class="detail"><%= post.username %></td>
-                            <td class="detail"><%= post.content %></td>
-                            <td><%=aggregateRating( post.rating )%></td>
-                            <td class="detail"><%= prettyDate(post.releaseDate) %></td>
-                        </tr>
-                    <% } %>
-                </tbody>
+        <% if(typeof post.comments === 'undefined' || post.comments.length === 0) { %>
+            <div class="well">No Comments.</div>
+        <%} else { %>
+            <div class="panel">
+                <div class="panel-heading">
+                    Latest Comments
+                </div>
+                <div class="panel-body">
+                    <table id="table-comments" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Content</th>
+                                <th>Link</th>
+                                <th>Comment Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-                <script>
-                    $(".table>tbody>tr>td.detail").on("click", function(e){
-                        var postId = $(this).closest("tr").data("postid");
-                        window.open("/post/" + postId);
-                        //window.location.href = "/post/" + postId;
-                    })
+                            <% for (var j = 0; j < post.comments.length; j++ ) {%>
+                                <% var comment = post.comments[j]; %>
+                                <tr data-postid="<%= post._id %>">
+                                    <td><%= comment.username %></td>
+                                    <td><%= comment.text %></td>
+                                    <td><a href="<%= comment.link %>">View the Post</a></td>
+                                    <td class="detail"><%= prettyDate(comment.date) %></td>
+                                </tr>
+                            <% } %>
 
-                    $(".table>tbody>tr>td.delete").on("click", function(e) {
-                        e.preventDefault();
+                        </tbody>
 
-                        var postId = $(this).closest("tr").data("postid");
-                        console.log($(this).closest("tr"));
-                        $.ajax({
-                            url: "/post/" + postId,
-                            type: "DELETE",
-                            success: function (data) {
-                                console.log("deleted: " + data);
-                                window.location.href  = "/profile";
-                            }
-                        });
-                    })
 
-                </script>
-            </table>
-        </div>
-    </div>
+                    </table>
+                </div>
+            </div>
+        <% } %>
+
+    <% } %>
 
 </div>
+<script>
+    $("#table-posts.table>tbody>tr>td.detail").on("click", function(e){
+        var postId = $(this).closest("tr").data("postid");
+        var username = "<%=user.username%>";
+        window.open("/blog/" + username + "/" + postId);
+    })
+
+    $("#table-posts.table>tbody>tr>td.delete").on("click", function(e) {
+        e.preventDefault();
+
+        var postId = $(this).closest("tr").data("postid");
+        console.log($(this).closest("tr"));
+        $.ajax({
+            url: "/post/" + postId,
+            type: "DELETE",
+            success: function (data) {
+                console.log("deleted: " + data);
+                window.location.href  = "/profile";
+            }
+        });
+    })
+
+    </script>

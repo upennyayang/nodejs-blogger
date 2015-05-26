@@ -2,80 +2,103 @@
 
 <div class="container md">
 
-    <h1><span class="fa fa-book"></span> Blog</h1>
 
-  <div class="panel">
-    <div class="panel-body">
-      <% for(var i = 0; i < posts.length; i ++) { %>
-        <% var post = posts[i]; %>
-        <h1 class="post-heading"><%= post.title %><a href="/blogger<%= post.username %>"></a></h1>
+    <h1><span class="fa fa-book"></span> Blog
+    <a href="/post" class="btn btn-primary pull-right">New Post</a></h1>
+
+    <ol class="breadcrumb">
+      <li><a href="/profile">Home</a></li>
+      <li><a href="/blog/<%= blogger %>">Author: <%= blogger %></a></li>
+
+      <% if(typeof posts !== 'undefined'  && posts.length === 1) { %>
+        <li class="active"> <a href="/blog/<%= blogger %>/<%= posts[0]._id %>">Title: <%= posts[0].title %></a></li>
+      <% } %>
+    </ol>
+
+  <% if(typeof posts === 'undefined' || posts.length === 0) { %>
+    <div class="well">No Blogs Yet.</div>
+  <% } else { %>
+
+    <% for(var i = 0; i < posts.length; i ++) { %>
+      <% var post = posts[i]; %>
+
+      <div class="panel">
+        <div class="panel-body">
+
+            <h1 class="post-heading"><a href="/blog/<%= post.username %>/<%= post._id %>"><%= post.title %></a></h1>
 
 
-        <p class="post-date"><%= shortDate(post.releaseDate) %></p>
-        <p class="post-author">Posted by <%= post.username %></p>
-        <hr>
+            <p class="post-date"><%= shortDate(post.releaseDate) %></p>
+            <p class="post-author">Posted by <%= post.username %></p>
+            <hr>
 
-        <% if(post.image) { %>
-          <img class="post-image" src="<%= post.image %>" />
-        <% } else { %>
-          <div class="well">No Image for This Post</div>
-        <% } %>
+            <% if(post.image) { %>
+              <img class="post-image" src="<%= post.image %>" />
+            <% } else { %>
+              <div class="well">No Image for This Post</div>
+            <% } %>
 
-        <p class="post-content"><%= post.content %></p>
+            <p class="post-content"><%= post.content %></p>
 
-        <hr>
+            <hr>
 
-        <h3> Leave a comment </h3>
+            <!-- COMMENTS -->
+            <h3> Leave a comment </h3>
 
-        <!-- The user is not logged in -->
-        <% if(!username) { %>
-          <form action="/login-comment" method="post">
-            <div class="form-group">
-              <label>Username or Email</label>
-              <input type="text" class="form-control" name="username">
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password">
-            </div>
+            <!-- The user is not logged in -->
+            <% if(!username) { %>
+              <form action="/login-comment" method="post">
+                <div class="form-group">
+                  <label>Username or Email</label>
+                  <input type="text" class="form-control" name="username">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" name="password">
+                </div>
 
-        <!-- The user is already logged in -->
-        <% } else { %>
-          <form action="/comment" method="post">
-            <input type="hidden" name="username" value="<%= username %>" />
-        <% } %>
+            <!-- The user is already logged in -->
+            <% } else { %>
+              <form action="/comment" method="post">
+                <input type="hidden" name="username" value="<%= username %>" />
+            <% } %>
 
-          <input type="hidden" name="postId" value="<%= post._id %>"></input>
-          <label>Comment</label>
-          <textarea rows="4" cols="50"type="text" class="form-control" name="comment"></textarea>
-          <br>
-          <button type="submit" class="btn btn-primary">
-            <% if(!username) { %>Log in &<% } %> Post
-          </button>
-        </form>
+              <input type="hidden" name="blogger" value="<%= blogger %>"></input>
+              <input type="hidden" name="postId" value="<%= post._id %>"></input>
+              <label>Comment</label>
+              <textarea rows="4" cols="50"type="text" class="form-control" name="comment"></textarea>
+              <br>
+              <button type="submit" class="btn btn-primary">
+                <% if(!username) { %>Log in &<% } %> Post
+              </button>
+            </form>
 
-        <hr>
-        <!-- comments -->
-        <ul class="media-list">
-          <% for(var i = 0; i < post.comments.length; i ++) { %>
+            <hr>
+            <!-- comments -->
+            <ul class="media-list">
+              <% var comments = post.comments; %>
+              <% for(var j = 0; j < comments.length; j ++) { %>
+                <% var comment = comments[j]; %>
+                <li class="media">
+                  <div class="media-left">
+                    <a href="#"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
+                  </div>
+                  <div class="media-body">
+                    <h4 class="media-heading"><%= comment.username %> &nbsp; <small> <%= shortDate(comment.date) %> </small></h4>
+                    <p><%= comment.text %></p>
+                  </div>
+                </li>
 
-            <% var comment = post.comments[i]; %>
-            <li class="media">
-              <div class="media-left">
-                <a href="#"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
-              </div>
-              <div class="media-body">
-                <h4 class="media-heading"><%= comment.username %> &nbsp; <small> <%= shortDate(comment.date) %> </small></h4>
-                <p><%= comment.text %></p>
-              </div>
-            </li>
+              <% } %>
+            </ul>
+            <!-- ./COMMENTS -->
 
-          <% } %>
-        </ul>
 
-      <% } %> <!-- END posts loop -->
-    </div><!-- END .panel-body -->
-  </div><!-- END .panel -->
+        </div><!-- END .panel-body -->
+      </div><!-- END .panel -->
+    <% } %> <!-- END posts loop -->
+
+  <% } %>
 
 </div><!-- END .container -->
 

@@ -3,161 +3,60 @@
 <div class="container">
 
     <div class="page-header">
-        <div class="pull-right">
-            <a href="/post" class="btn btn-default">Create Post</a>
-            <a href="/blog/<%=user.username%>" class="btn btn-default">View My Blog</a>
-            <a href="/posts" class="btn btn-default">View All Posts</a>
-        </div>
-        <h1><span class="fa fa-user"></span> My Profile</h1>
+        <h1 class="post-heading"><strong> Blogger - <%= user.username %></strong> <br></h1>
+        <p class="lead text-center">Email: <%= user.email %>, Comments: <%= comments.length %>, Ratings: <%= user.rating %> </p>
     </div>
 
     <% if (typeof message !== 'undefined' && message.length > 0) { %>
         <div class="alert alert-danger"><%= message %></div>
     <% } %>
 
-
-    <div class="panel">
-        <div class="panel-heading">
-          <span class="fa fa-laptop"></span> Local
-        </div>
-        <div class="panel-body">
-
-            <div class="row">
-                <div class="col-md-6">
-                    <strong>Username</strong>: <%= user.username %><br>
-                    <strong>Email</strong>: <%= user.email %><br>
-                    <strong>Password</strong>: <%= user.password %><br>
-                </div>
-                <div class="col-md-6">
-
-
-                <strong>Blog Title</strong>: <%= user.blogTitle %><br>
-                <strong>Blog Description</strong>: <%= user.blogDescription %><br>
-                <strong>Vanity url</strong>: <%= user.vanityUrl %><br>
-                <strong>Tags</strong>: <%= user.tags %><br>
-
-                </div>
+    <div class="col-md-9">
+        <div class="panel">
+            <div class="panel-heading">
+                Posts
             </div>
+            <div class="panel-body">
+                <% if(typeof posts === 'undefined' || posts.length === 0) { %>
+                  <div class="well">I have no posts yet. <a href="/post"> Create a new one.</a></div>
+                <% } else { %>
 
+
+
+                <% for (var i=0; i < posts.length; i++ ) {%>
+                    <% var post = posts[i]; %>
+                    <div class="media" style="padding: 0 150px;">
+                        <div class="media-left">
+                            <img class="media-object img-circle"  src="<%= post.image %>" width="74" height="74" />
+                        </div>
+                        <div class="media-body">
+                            <h1 style="font-size: 35px; text-align: center;">
+                                <a href="/blog/<%=username%>/<%=post._id%>"><%= post.title %></a>
+                                &nbsp;<small><%= recentDate(post.releaseDate, post.modificationDate) %></small>
+                            </h1>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
         </div>
     </div>
 
-    <div class="panel">
-        <div class="panel-heading">
-            My Posts
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th class="image">Thumbnail</th>
-                        <th>Title</th>
-                        <th>Location</th>
-                        <th>Tags</th>
-                        <th>Url</th>
-                        <th>Created Date</th>
-                        <th>Updated Date</th>
-                        <th>Comments Count</th>
-                        <th>Aggregate Rating</th>
-                        <th>Delete</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (var i=0; i < posts.length; i++ ) {%>
-                        <% var post = posts[i]; %>
-                        <tr data-postid="<%= post._id %>">
-                            <td class="detail"><img src="<%= post.image %>" style="width: 400px"/></td>
-                            <td class="detail"><a href="/post/<%=post._id%>"><%= post.title %></a></td>
-                            <td class="detail"><%= post.location %></td>
-                            <td class="detail"><%= post.tags %></td>
-                            <td class="detail"><%= post.url %></td>
-                            <td class="detail"><%= prettyDate(post.releaseDate) %></td>
-                            <td class="detail"><%= prettyDate(post.modificationDate) %></td>
-                            <td><%=commentCount( post.comment )%></td>
-                            <td><%=aggregateRating( post.rating )%></td>
-                            <td class="delete"><a href="#">Delete</a></td>
-                            <td class="edit"><a href="/post/<%= post._id %>">Edit</a></td>
-                        </tr>
+    <div class="col-md-3">
+        <div class="panel">
+            <div class="panel-heading">
+                Comments
+            </div>
+            <div class="panel-body">
+                <% if(typeof post === 'undefined' || typeof post.comments === 'undefined' || post.comments.length === 0) { %>
+                  No Comments.
+                    <%} else { %>
+                        <% for (var j = 0; j < post.comments.length; j++ ) {%>
+                            <% var comment = post.comments[j]; %>
+                                <p class="post-comment"><a href="<%= comment.link %>"><%= comment.text %></a></p>
+                        <% } %>
                     <% } %>
-                </tbody>
-                <script>
-                    $(".table>tbody>tr>td.detail").on("click", function(e){
-                        var postId = $(this).closest("tr").data("postid");
-                        window.open("/post/" + postId);
-                        //window.location.href = "/post/" + postId;
-                    })
-
-                    $(".table>tbody>tr>td.delete").on("click", function(e) {
-                        e.preventDefault();
-
-                        var postId = $(this).closest("tr").data("postid");
-                        console.log($(this).closest("tr"));
-                        $.ajax({
-                            url: "/post/" + postId,
-                            type: "DELETE",
-                            success: function (data) {
-                                console.log("deleted: " + data);
-                                window.location.href  = "/profile";
-                            }
-                        });
-                    })
-
-                </script>
-            </table>
-        </div>
-    </div>
-
-    <div class="panel">
-        <div class="panel-heading">
-            Latest Comments
-        </div>
-        <div class="panel-body">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Content</th>
-                        <th>Link</th>
-                        <th>Comment Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (var i=0; i < posts.length; i++ ) {%>
-                        <% var post = posts[i]; %>
-                        <tr data-postid="<%= post._id %>">
-                            <td class="detail"><%= post.username %></td>
-                            <td class="detail"><%= post.content %></td>
-                            <td><%=aggregateRating( post.rating )%></td>
-                            <td class="detail"><%= prettyDate(post.releaseDate) %></td>
-                        </tr>
-                    <% } %>
-                </tbody>
-
-                <script>
-                    $(".table>tbody>tr>td.detail").on("click", function(e){
-                        var postId = $(this).closest("tr").data("postid");
-                        window.open("/post/" + postId);
-                        //window.location.href = "/post/" + postId;
-                    })
-
-                    $(".table>tbody>tr>td.delete").on("click", function(e) {
-                        e.preventDefault();
-
-                        var postId = $(this).closest("tr").data("postid");
-                        console.log($(this).closest("tr"));
-                        $.ajax({
-                            url: "/post/" + postId,
-                            type: "DELETE",
-                            success: function (data) {
-                                console.log("deleted: " + data);
-                                window.location.href  = "/profile";
-                            }
-                        });
-                    })
-
-                </script>
-            </table>
+                <% } %>
+            </div>
         </div>
     </div>
 
