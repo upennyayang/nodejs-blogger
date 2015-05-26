@@ -30,7 +30,14 @@
 
             <p class="post-date"><%= shortDate(post.releaseDate) %></p>
             <p class="post-author">Posted by <%= post.username %></p>
+
             <hr>
+
+            <%if(post.tags) { %>
+              <div class="post-tags">
+                Tags: &nbsp;<a href="/posts?tags=<%= post.tags %>"><span class="label label-primary"><%= post.tags %></span></a>
+              </div>
+            <% } %>
 
             <% if(post.image) { %>
               <img class="post-image" src="<%= post.image %>" />

@@ -196,7 +196,15 @@ module.exports = (app) => {
   })
 
   app.get('/posts', then(async(req, res) => {
-    let posts = await Post.promise.find({})
+    let tags = req.query.tags
+    let posts
+
+    if(tags) {
+      posts = await Post.promise.find({tags: tags})
+    } else {
+      posts = await Post.promise.find({})
+    }
+
     console.log(posts)
     res.render('posts.ejs', {
       posts: posts,

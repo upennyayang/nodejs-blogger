@@ -6,14 +6,6 @@
     <h1><span class="fa fa-book"></span> All Posts by All Bloggers
     <a href="/post" class="btn btn-primary pull-right">New Post</a></h1>
 
-    <ol class="breadcrumb">
-      <li><a href="/profile">Home</a></li>
-
-      <% if(typeof posts !== 'undefined'  && posts.length <= 1) { %>
-        <li class="active"> <a href="/blog/<%= blogger %>/<%= posts[0]._id %>">Title: <%= posts[0].title %></a></li>
-      <% } %>
-    </ol>
-
   <% for(var i = 0; i < posts.length; i ++) { %>
     <% var post = posts[i]; %>
 
@@ -25,7 +17,14 @@
 
           <p class="post-date"><%= shortDate(post.releaseDate) %></p>
           <p class="post-author">Posted by <%= post.username %></p>
+
           <hr>
+
+          <%if(post.tags) { %>
+            <div class="post-tags">
+              Tags: &nbsp;<a href="/posts?tags=<%= post.tags %>"><span class="label label-primary"><%= post.tags %></span></a>
+            </div>
+          <% } %>
 
           <% if(post.image) { %>
             <img class="post-image" src="<%= post.image %>" />
@@ -33,7 +32,7 @@
             <div class="well">No Image for This Post</div>
           <% } %>
 
-          <p class="post-content"><%= post.content %></p>
+          <p class="post-content"><%- post.content %></p>
 
           <hr>
 
