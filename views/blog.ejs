@@ -8,64 +8,75 @@
     <div class="panel-body">
       <% for(var i = 0; i < posts.length; i ++) { %>
         <% var post = posts[i]; %>
+        <h1 class="post-heading"><%= post.title %><a href="/blogger<%= post.username %>"></a></h1>
 
-        <h1 class="post-heading"><%= post.title %></h1>
 
-        <p class="lead"><%= post.title %>By <a href="/blogger<%= post.username %>"></a></p>
+        <p class="post-date"><%= shortDate(post.releaseDate) %></p>
+        <p class="post-author">Posted by <%= post.username %></p>
+        <hr>
 
-        <div class="meta">
-          <div class="meta-item"><%= post.releaseDate %></div>
-          <div class="meta-item">Posted by <%= post.username %></div>
-        </div>
+        <% if(post.image) { %>
+          <img class="post-image" src="<%= post.image %>" />
+        <% } else { %>
+          <div class="well">No Image for This Post</div>
+        <% } %>
+
+        <p class="post-content"><%= post.content %></p>
 
         <hr>
 
-        <img class="img-responsive" src="<%= post.image %>" />
-        <p><%= post.content %></p>
-
-        <hr>
-
-        <!-- comments -->
         <h3> Leave a comment </h3>
-        <p>Sign in with</p>
-        </p>
 
-        <form action="/login" method="post">
-          <div class="col-lg-3">
+        <!-- The user is not logged in -->
+        <% if(!username) { %>
+          <form action="/login-comment" method="post">
             <div class="form-group">
-                <label>Username or Email</label>
-                <input type="text" class="form-control" name="username">
+              <label>Username or Email</label>
+              <input type="text" class="form-control" name="username">
             </div>
             <div class="form-group">
                 <label>Password</label>
                 <input type="password" class="form-control" name="password">
             </div>
-          </div>
-          <div class="col-lg-9">
-            <label>Comment</label>
-            <textarea rows="4" cols="50"type="text" class="form-control" name="content"><%= post.content %></textarea>
-          </div>
-          <br><br>
 
-          <button type="submit" class="btn btn-primary">Log in & Post</button>
-          </div>
+        <!-- The user is already logged in -->
+        <% } else { %>
+          <form action="/comment" method="post">
+            <input type="hidden" name="username" value="<%= username %>" />
+        <% } %>
+
+          <input type="hidden" name="postId" value="<%= post._id %>"></input>
+          <label>Comment</label>
+          <textarea rows="4" cols="50"type="text" class="form-control" name="comment"></textarea>
+          <br>
+          <button type="submit" class="btn btn-primary">
+            <% if(!username) { %>Log in &<% } %> Post
+          </button>
         </form>
 
         <hr>
+        <!-- comments -->
+        <ul class="media-list">
+          <% for(var i = 0; i < post.comments.length; i ++) { %>
 
-        <div class="media">
-          <div class="pull-left">
-            <div class="media-object">ytian</div>
-          </div>
-          <div class="media-body">
-            <h4 class="media-heading">Thi is  agood post <small>media date</small></h4>
-            This is the content of the post
-          </div>
-        </div>
+            <% var comment = post.comments[i]; %>
+            <li class="media">
+              <div class="media-left">
+                <a href="#"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
+              </div>
+              <div class="media-body">
+                <h4 class="media-heading"><%= comment.username %> &nbsp; <small> <%= shortDate(comment.date) %> </small></h4>
+                <p><%= comment.text %></p>
+              </div>
+            </li>
 
-      <% } %>
-    </div>
-  </div>
+          <% } %>
+        </ul>
+
+      <% } %> <!-- END posts loop -->
+    </div><!-- END .panel-body -->
+  </div><!-- END .panel -->
+
+</div><!-- END .container -->
 
 
-</div>

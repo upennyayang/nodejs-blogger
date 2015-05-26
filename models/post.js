@@ -1,20 +1,6 @@
 let mongoose = require('mongoose')
 let Schema = mongoose.Schema
 
-let CommentSchema = new Schema({
-  username: String,
-  content: String,
-  postLink: String,
-  commentDate: String,
-  upvoteCount: Number,
-  downvoteCount: Number
-})
-
-let RatingSchema = new Schema({
-  username: String,
-  rating: Number
-})
-
 let PostSchema = new Schema({
   id: mongoose.Schema.ObjectId,
   username: String,
@@ -38,8 +24,17 @@ let PostSchema = new Schema({
     required: true
   },
   image: String,
-  comments: [CommentSchema],
-  ratings: [RatingSchema]
+  comments: [{
+    username: String,
+    text: String,
+    date: {type: Date, default: Date.now},
+    upvote: Number,
+    downvote: Number
+  }],
+  ratings: [{
+    username: String,
+    rating: Number
+  }]
 })
 
 module.exports = mongoose.model('Post', PostSchema)

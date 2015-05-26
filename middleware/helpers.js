@@ -6,6 +6,10 @@ module.exports = (app) => {
     return moment(date).format("YYYY-MM-DD HH:mm")
   }
 
+  app.locals.shortDate = function(date) {
+    return moment(date).format("MMM DD, YYYY")
+  }
+
   app.locals.commentCount = function(comments) {
     return comments ? comments.length : 0
   }

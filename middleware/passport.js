@@ -1,6 +1,7 @@
 let LocalStrategy = require('passport-local').Strategy
 let nodeifyit = require('nodeifyit')
 let User = require('../models/user')
+let Post = require('../models/post')
 
 module.exports = (app) => {
   let passport = app.passport
@@ -84,4 +85,45 @@ module.exports = (app) => {
       }
 
   }, {spread: true})))
+
+
+  /**
+  * strategy: comment
+  */
+  passport.use('login-comment', new LocalStrategy({
+    usernameField: "username",
+    failureFlash: true,
+    passReqToCallback: true
+  }, nodeifyit(async(req, username, password) => {
+    let user
+    let isEmail = username.indexOf('@') > 0
+
+    if(isEmail) {
+      let email = username.toLowerCase()
+      user = await User.promise.findOne({email: email})
+    } else {
+      user = await User.promise.findOne({username: {$regex: username, $options: 'i'}})
+    }
+
+    if(!user) {
+      return [false, {message: 'Invalid username / email.'}]
+    }
+    // console.log("here", username, password)
+    if(!await user.validatePassword(password)) {
+      return [false, {message: 'Invalid password.'}]
+    }
+
+    // Insert comment
+    let {postId, comment} = req.body
+    console.log(username, postId, comment)
+
+
+    await Post.promise.update({_id: postId}, {$push: {comments: {
+      username: username,
+      text: comment
+    }}})
+
+    return user
+  }, {spread: true})))
+
 }

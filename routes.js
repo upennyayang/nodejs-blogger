@@ -195,18 +195,46 @@ module.exports = (app) => {
 
   // -- Blog
 
-  app.get('/blog/:username', then(async(req, res) => {
-    let username = req.params.username
-    let posts = await Post.promise.find({username: username})
+  app.get('/blog/:blogger', then(async(req, res) => {
+    let blogger = req.params.blogger
+    let posts = await Post.promise.find({username: blogger})
     if(!posts || posts.length === 0) res.render('error.ejs', {message: username + ' has no posts yet.'})
 
-    console.log("Finding blog for username[username]: ", username)
+    console.log("Finding blog for username[username]: ", blogger)
     console.log("Finding blog for username[result]: ", posts.length)
     res.render('blog.ejs', {
-      username: username,
-      posts: posts
+      blogger: blogger,
+      posts: posts,
+      username: req.user ? req.user.username : null
     })
   }))
+
+  //Comment
+  app.post('/comment', then(async(req, res) => {
+    let {postId, comment} = req.body
+
+    console.log(req.url)
+    await Post.promise.update({_id: postId}, {$push: {comments: {
+      username: req.user.username,
+      text: comment
+    }}})
+
+    res.redirect('/blog')
+  }))
+
+   app.post('/login-comment', passport.authenticate('login-comment', {
+    successRedirect: '/blog',
+    failureRedirect: '/blog',
+    failureFlash: true
+  }))
+
+  app.post('/login', passport.authenticate('local', {
+    successRedirect: '/profile',
+    failureRedirect: '/login',
+    failureFlash: true
+  }))
+
+
 
   // My posts
   app.get('/blog', isLoggedIn, then(async(req, res) => {
@@ -215,17 +243,17 @@ module.exports = (app) => {
   }))
 
   // One post
-  app.get('/blog/:username/:post', then(async(req, res) => {
-    let username = req.params.username
+  app.get('/blog/:blogger/:post', then(async(req, res) => {
+    let blogger = req.params.blogger
     let title = req.params.post
 
     let post = await Post.promise.find({
-      $and: [{username: username}, {title: title}]
+      $and: [{username: blogger}, {title: title}]
     })
     if(!post) res.render('error.ejs', {message: 'User not found.'})
 
     res.render('blog.ejs', {
-      username: username,
+      blogger: blogger,
       posts: post
     })
   }))
