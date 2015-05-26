@@ -246,18 +246,60 @@ module.exports = (app) => {
 
   // - Comment
 
-  app.post('/comment', then(async(req, res) => {
-    let {postId, blogger, comment} = req.body
-    let username = req.user.username
+  app.post('/comment/:commentId?', then(async(req, res) => {
+    let commentId = req.params.commentId
 
-    await Post.promise.update({_id: postId}, {$push: {comments: {
-      username: username,
-      blogger: blogger,
-      text: comment,
-      link: `/blog/${blogger}/${postId}`
-    }}})
+    // new comment
+    if(!commentId) {
 
+      let {postId, blogger, comment} = req.body
+      let username = req.user.username
+
+      await Post.promise.update({_id: postId}, {$push: {comments: {
+        username: username,
+        blogger: blogger,
+        text: comment,
+        link: `/blog/${blogger}/${postId}`
+      }}})
+
+      res.redirect(`/blog/${blogger}/${postId}`)
+    }
+
+    //edit comment
+    let {postId, blogger, editedComment} = req.body
+    console.log(
+      {
+        _id: postId,
+        username: blogger,
+        comments: {
+          $elemMatch: {
+            _id: commentId,
+
+          }
+        }
+      }, {
+        $set: {
+          'comments.$.text': editedComment
+        }
+      })
+    await Post.promise.update(
+      {
+        _id: postId,
+        username: blogger,
+        comments: {
+          $elemMatch: {
+            _id: commentId,
+
+          }
+        }
+      }, {
+        $set: {
+          'comments.$.text': editedComment
+        }
+      }
+    )
     res.redirect(`/blog/${blogger}/${postId}`)
+
   }))
 
    app.post('/login-comment', passport.authenticate('login-comment', {

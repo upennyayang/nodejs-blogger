@@ -31,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 // Use ejs for templating
 app.engine('ejs', engine)
 app.set('view engine', 'ejs')
+app.use(express.static('public'))
 
 // In-memory session support, required by passport.session()
 app.use(session({

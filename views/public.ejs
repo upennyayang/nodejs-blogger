@@ -52,7 +52,7 @@
                     <%} else { %>
                         <% for (var j = 0; j < post.comments.length; j++ ) {%>
                             <% var comment = post.comments[j]; %>
-                                <p class="post-comment"><a href="<%= comment.link %>"><%= comment.text %></a></p>
+                                <p class="post-comment"><a href="<%= comment.link %>"><%- comment.text %></a></p>
                         <% } %>
                     <% } %>
                 <% } %>

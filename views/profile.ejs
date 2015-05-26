@@ -114,7 +114,7 @@
                                 <% var comment = post.comments[j]; %>
                                 <tr data-postid="<%= post._id %>">
                                     <td><%= comment.username %></td>
-                                    <td><%= comment.text %></td>
+                                    <td><%- comment.text %></td>
                                     <td><a href="<%= comment.link %>">View the Post</a></td>
                                     <td class="detail"><%= prettyDate(comment.date) %></td>
                                 </tr>
