@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link href="/plugins/summernote/summernote.css" rel="stylesheet" />
+    <link href="/plugins/raty/jquery.raty.css" media="all" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <style>
@@ -171,12 +172,18 @@
 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="/plugins/summernote/summernote.js"></script>
+     <script src="/plugins/raty/jquery.raty.js"></script>
     <!-- REQUIRED SCRIPT FOR TEXT EDITOR -->
     <script>
         $(document).ready(function () {
             $('.text-editor').summernote({
                 height: 250// set height for editor
             });
+            $('.raty').raty({
+              half      : true,
+              path      : '/plugins/raty/images',
+              // size      : 24
+            })
         });
     </script>
 </body>
