@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
     <link href="/plugins/summernote/summernote.css" rel="stylesheet" />
     <link href="/plugins/raty/jquery.raty.css" media="all" rel="stylesheet" />
+    <link href="/plugins/upvote/jquery.upvote.css" media="all" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 
     <style>
@@ -172,18 +173,34 @@
 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="/plugins/summernote/summernote.js"></script>
-     <script src="/plugins/raty/jquery.raty.js"></script>
-    <!-- REQUIRED SCRIPT FOR TEXT EDITOR -->
+    <script src="/plugins/raty/jquery.raty.js"></script>
+    <script src="/plugins/upvote/jquery.upvote.js"></script>
+
+    <!-- REQUIRED SCRIPTS -->
     <script>
         $(document).ready(function () {
+
             $('.text-editor').summernote({
                 height: 250// set height for editor
             });
+
             $('.raty').raty({
-              half      : true,
-              path      : '/plugins/raty/images',
-              // size      : 24
+              half: true,
+              path: '/plugins/raty/images',
+              size: 24
             })
+
+            $('.upvote').upvote({
+              id: $(this).data("id"),
+              callback: function(data) {
+                console.log({ id: data.id, up: data.upvoted, down: data.downvoted })
+                $.ajax({
+                  url: '/vote',
+                  type: 'post',
+                  data: { id: data.id, up: data.upvoted, down: data.downvoted }
+                });
+            }});
+
         });
     </script>
 </body>

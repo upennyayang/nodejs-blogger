@@ -369,4 +369,32 @@ module.exports = (app) => {
       username: req.user ? req.user.username : null
     })
   }))
+
+  // - vote
+  app.post('/vote', then(async(req, res) => {
+
+    let {id, up, down} = req.body
+    console.log(id, up, down)
+
+    let upvote =  up == 'true' ?  1 : 0
+    let downvote = down == 'true' ?  1 : 0
+
+    console.log(upvote, downvote)
+
+    await Post.promise.update({
+      comments: {
+        $elemMatch: {
+          _id: id
+        }
+      }
+    }, {
+      $inc: {
+        'comments.$.upvote': upvote,
+        'comments.$.downvote': downvote
+      }
+    })
+
+    res.send(true)
+
+  }))
 }

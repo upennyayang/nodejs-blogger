@@ -75,7 +75,15 @@
             <% var comments = post.comments; %>
             <% for(var j = 0; j < comments.length; j ++) { %>
               <% var comment = comments[j]; %>
+
               <li class="media">
+                <div class="media-left">
+                  <div id="topic" class="upvote" data-id="<%= comment._id %>">
+                    <a class="upvote"></a>
+                    <span class="count"><%= minus(comment.upvote - comment.downvote) %></span>
+                    <a class="downvote"></a>
+                  </div>
+                </div>
                 <div class="media-left">
                   <a href="#"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
                 </div>

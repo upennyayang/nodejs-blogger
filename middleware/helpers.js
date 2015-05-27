@@ -28,5 +28,9 @@ module.exports = (app) => {
   app.locals.aggregateRating = function(ratings) {
     return ratings ? ratings.length : "No Ratings"
   }
+
+  app.locals.minus = function(x, y) {
+    return x - y;
+  }
 }
 
