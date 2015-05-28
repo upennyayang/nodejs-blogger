@@ -80,8 +80,8 @@
                                 <td class="detail"><%= post.url %></td>
                                 <td class="detail"><%= prettyDate(post.releaseDate) %></td>
                                 <td class="detail"><%= prettyDate(post.modificationDate) %></td>
-                                <td><%=commentCount( post.comments )%></td>
-                                <td><%=aggregateRating( post.ratings )%></td>
+                                <td><%=arrayCount( post.comments )%></td>
+                                <td><b><%= avgRating(post.ratings) %></b>/5 &nbsp; (<%= arrayCount(post.ratings) %></b> Reviews) </td>
                                 <td class="delete"><a href="#">Delete</a></td>
                                 <td class="edit"><a href="/post/<%= post._id %>">Edit</a></td>
                             </tr>

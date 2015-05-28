@@ -187,7 +187,33 @@
             $('.raty').raty({
               half: true,
               path: '/plugins/raty/images',
-              size: 24
+              size: 24,
+              cancel: true,
+              score: function() {
+                return $(this).attr('data-score');
+              },
+              click: function(score, evt) {
+                var postId = $(this).attr('data-postId');
+                var rater = $(this).attr('data-rater');
+                console.log({postId: postId, rater: rater, score: score});
+                $.ajax({
+                  url: '/rate',
+                  type: 'post',
+                  data: {postId: postId, rater: rater, score: score}
+                });
+              }
+            })
+
+            $('.raty-static').raty({
+              half: true,
+              path: '/plugins/raty/images',
+              size: 24,
+              score: function() {
+                return $(this).attr('data-score');
+              },
+              click: function(score, evt) {
+                return false;
+              }
             })
 
             $('.upvote').upvote({

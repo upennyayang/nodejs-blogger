@@ -4,7 +4,7 @@
 
     <div class="page-header">
         <h1 class="post-heading"><strong> Blogger - <%= user.username %></strong> <br></h1>
-        <p class="lead text-center">Email: <%= user.email %>, Comments: <%= comments.length %>, Ratings: <%= user.rating %> </p>
+        <p class="lead text-center">Email: <%= user.email %>, Comments: <%= comments.length %>, Ratings: <%= rating %> </p>
     </div>
 
     <% if (typeof message !== 'undefined' && message.length > 0) { %>
@@ -31,7 +31,7 @@
                         </div>
                         <div class="media-body">
                             <h1 style="font-size: 35px; text-align: center;">
-                                <a href="/blog/<%=username%>/<%=post._id%>"><%= post.title %></a>
+                                <a href="/blog/<%=user.username%>/<%=post._id%>"><%= post.title %></a>
                                 &nbsp;<small><%= recentDate(post.releaseDate, post.modificationDate) %></small>
                             </h1>
                         </div>

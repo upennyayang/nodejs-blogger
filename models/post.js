@@ -29,12 +29,12 @@ let PostSchema = new Schema({
     text: String,
     link: String,
     date: {type: Date, default: Date.now},
-    upvote: Number,
-    downvote: Number
+    upvote: {type: Number, default: 0},
+    downvote: {type: Number, default: 0}
   }],
   ratings: [{
     username: String,
-    rating: Number
+    score: Number
   }]
 })
 

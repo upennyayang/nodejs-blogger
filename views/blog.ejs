@@ -29,13 +29,19 @@
 
 
             <p class="post-date"><%= shortDate(post.releaseDate) %></p>
-            <p class="post-author">Posted by <%= post.username %></p>
+            <p class="post-author">Posted by <a href="/public/<%= post.username %>"><%= post.username %></a></p>
 
             <hr>
 
             <%if(post.tags) { %>
               <div class="post-tags">
                 Tags: &nbsp;<a href="/posts?tags=<%= post.tags %>"><span class="label label-primary"><%= post.tags %></span></a>
+              </div>
+            <% } %>
+
+            <%if(post.ratings) { %>
+              <div class="post-ratings">
+                <div class="raty-static" data-score="<%= avgRating(post.ratings) %>" data-postId="<%= post._id%>" data-rater="<%= username %>">(Score: <b><%= avgRating(post.ratings) %></b>/5, <b><%= arrayCount(post.ratings) %></b> Reviews) &nbsp; </div>
               </div>
             <% } %>
 
@@ -49,7 +55,7 @@
 
             <hr>
 
-            <div class="raty" data-score="1">Rate</div>
+            <div class="raty" data-score="3" data-postId="<%= post._id%>" data-rater="<%= username %>">Rate</div>
 
             <!-- COMMENTS -->
             <h3> Leave a comment </h3>
@@ -74,7 +80,6 @@
 
               <input type="hidden" name="blogger" value="<%= blogger %>"></input>
               <input type="hidden" name="postId" value="<%= post._id %>"></input>
-              <label>Comment</label>
               <textarea rows="4" cols="50"type="text" class="form-control text-editor" name="comment"></textarea>
               <br>
               <button type="submit" class="btn btn-primary">
@@ -89,6 +94,13 @@
               <% for(var j = 0; j < comments.length; j ++) { %>
                 <% var comment = comments[j]; %>
                 <li class="media">
+                  <div class="media-left">
+                    <div id="topic" class="upvote" data-id="<%= comment._id %>">
+                      <a class="upvote"></a>
+                      <span class="count"><%= minus(comment.upvote, comment.downvote) %></span>
+                      <a class="downvote"></a>
+                    </div>
+                  </div>
                   <div class="media-left">
                     <a href="#"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
                   </div>
@@ -112,7 +124,7 @@
                                     <div class="form-group">
                                       <input type="hidden" name="blogger" value="<%= post.username %>"></input>
                                       <input type="hidden" name="postId" value="<%= post._id %>"></input>
-                                      <input type="text" name="editedComment" class="form-control" value="<%= comment.text %>">
+                                      <input type="text" name="editedComment" class="form-control" value="<%- comment.text %>">
                                     </div>
                                 </div>
                                 <div class="modal-footer">

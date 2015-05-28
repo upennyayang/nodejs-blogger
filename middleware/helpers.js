@@ -21,15 +21,23 @@ module.exports = (app) => {
     return moment(recent).format("MMM DD, YYYY")
   }
 
-  app.locals.commentCount = function(comments) {
-    return comments ? comments.length : 0
+  app.locals.arrayCount = function(arr) {
+    return arr ? arr.length : 0
   }
 
-  app.locals.aggregateRating = function(ratings) {
-    return ratings ? ratings.length : "No Ratings"
+  app.locals.avgRating = function(arr) {
+    let sum = 0
+    let avg
+    arr.forEach(function(item) {
+      sum += parseFloat(item.score) || 0
+    })
+    avg = (sum/arr.length).toFixed(1)
+
+    return avg
   }
 
   app.locals.minus = function(x, y) {
+    console.log(x - y);
     return x - y;
   }
 }

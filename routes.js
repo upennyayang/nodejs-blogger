@@ -324,19 +324,13 @@ module.exports = (app) => {
 
   // - Public Profile
 
-  app.get('/public/:blogger?', isLoggedIn, then(async(req, res) => {
+  app.get('/public/:blogger?', then(async(req, res) => {
     let blogger = req.params.blogger
-    let username = req.user.username
     let user
     let posts
     let comments
+    let rating
 
-    // create a public profile
-    if(!blogger || blogger === 'undefined') {
-      res.redirect('/public/' + username)
-    }
-
-    // get public profile
     user = await User.promise.findOne({username: blogger})
     if(!user) {
       res.render('error.ejs', {message: 'Cannot find this blogger.'})
@@ -345,32 +339,42 @@ module.exports = (app) => {
     comments = await Post.promise.find({
       comments: {
         $elemMatch: {
-          username: username
+          username: blogger
         }
       }
     })
     console.log(comments)
 
     posts = await Post.promise.find({username: blogger})
+
+    rating = await Post.promise.aggregate([
+      {
+        $match: {
+          'username': blogger
+        }
+      }, {
+        $unwind: '$ratings'
+      }, {
+        $group: {
+          _id: null,
+          score: {$avg: '$ratings.score'}
+        }
+      }
+    ])
+    console.log(rating)
+
     res.render('public.ejs', {
-      username: username,
+      blogger: blogger,
       user: user,
       posts: posts,
+      rating: rating[0].score.toFixed(1),
       comments: comments
     })
   }))
 
-  // link of the public profile
-  // no need to be logged in
-  app.get('/pp/:blogger', then(async(req, res) => {
-    let blogger = req.params.blogger
-    res.render('public.ejs', {
-      blogger: blogger,
-      username: req.user ? req.user.username : null
-    })
-  }))
 
   // - vote
+
   app.post('/vote', then(async(req, res) => {
 
     let {id, up, down} = req.body
@@ -396,5 +400,28 @@ module.exports = (app) => {
 
     res.send(true)
 
+  }))
+
+  // - rate
+
+  app.post('/rate', then(async(req, res) => {
+
+    let {postId, rater, score} = req.body
+    console.log(postId, rater, score)
+
+    await Post.promise.update(
+      {
+        _id: postId
+      },
+      {
+        $push: {
+          ratings: {
+            username: rater,
+            score: score
+          }
+        }
+    })
+
+    res.send(true)
   }))
 }
