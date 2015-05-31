@@ -2,7 +2,7 @@
 
 This is a basic Blogger clone to create a blog with comments.
 
-Time spent: `30h`
+Time spent: `60h`
 
 ### Features
 
@@ -31,7 +31,14 @@ Time spent: `30h`
 - [x] Public user profiles show their information, posts and comments
 
 ### Walkthrough
-![Video Walkthrough](walkthrough.gif)
+![Video Walkthrough](public/walkthroughs/walkthrough-login-signup.gif)
+![Video Walkthrough](public/walkthroughs/walkthrough-post.gif)
+![Video Walkthrough](public/walkthroughs/walkthrough-comment.gif)
+![Video Walkthrough](public/walkthroughs/walkthrough-rating.gif)
+![Video Walkthrough](public/walkthroughs/walkthrough-upvote.gif)
+![Video Walkthrough](public/walkthroughs/walkthrough-public-profile-and-links.gif)
+
+
 
 
 
