@@ -120,7 +120,8 @@ module.exports = (app) => {
 
     await Post.promise.update({_id: postId}, {$push: {comments: {
       username: username,
-      text: comment
+      text: comment,
+      link: `/blog/${blogger}/${postId}`
     }}})
 
     return user
