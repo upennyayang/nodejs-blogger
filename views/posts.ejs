@@ -34,7 +34,7 @@
 
           <hr>
 
-          <div class="raty" data-score="3" data-postId="<%= post._id%>" data-rater="<%= username %>">Rate</div>
+          <div class="raty" data-postId="<%= post._id%>" data-rater="<%= username %>">Rate</div>
 
           <!-- COMMENTS -->
           <h3> Leave a comment </h3>
@@ -83,7 +83,7 @@
                   </div>
                 </div>
                 <div class="media-left">
-                  <a href="/blog/<%= post.username %>"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
+                  <a href="/public/<%= post.username %>"><img src="http://0.gravatar.com/avatar/ad516503a11cd5ca435acc9bb6523536?s=74" width="74" height="74" alt="" class="media-object pull-left img-circle" /></a>
                 </div>
                 <div class="media-body">
                   <h4 class="media-heading">
@@ -105,7 +105,7 @@
                                   <div class="form-group">
                                     <input type="hidden" name="blogger" value="<%= post.username %>"></input>
                                     <input type="hidden" name="postId" value="<%= post._id %>"></input>
-                                    <input type="text" name="editedComment" class="form-control" value="<%- comment.text %>">
+                                    <input type="text" name="editedComment" class="form-control" value='<%- comment.text %>'>
                                   </div>
                               </div>
                               <div class="modal-footer">

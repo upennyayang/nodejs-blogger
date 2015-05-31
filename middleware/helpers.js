@@ -28,6 +28,11 @@ module.exports = (app) => {
   app.locals.avgRating = function(arr) {
     let sum = 0
     let avg
+
+    if(!arr || arr.length === 0) {
+      return 'N/A';
+    }
+
     arr.forEach(function(item) {
       sum += parseFloat(item.score) || 0
     })

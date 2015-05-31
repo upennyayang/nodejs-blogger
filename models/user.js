@@ -40,13 +40,13 @@ userSchema.methods.validatePassword = async function(password) {
 }
 
 // Password restriction
-// userSchema.path('password').validate(pw => {
-//   console.log("validating password", pw)
-//   return pw.length > 4 &&
-//     /[A-Z]/.test(pw) &&
-//     /[a-z]/.test(pw) &&
-//     /[0-9]/.test(pw)
-// })
+userSchema.path('password').validate(pw => {
+  console.log("validating password", pw)
+  return pw.length > 4 &&
+    /[A-Z]/.test(pw) &&
+    /[a-z]/.test(pw) &&
+    /[0-9]/.test(pw)
+})
 
 userSchema.path('username').validate(usr => {
   console.log("validating username")

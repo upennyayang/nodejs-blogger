@@ -27,10 +27,10 @@
                     <% var post = posts[i]; %>
                     <div class="media" style="padding: 0 150px;">
                         <div class="media-left">
-                            <img class="media-object img-circle"  src="<%= post.image %>" width="74" height="74" />
+                            <img class="media-object img-square"  src="<%= post.image %>" width="74" height="74" />
                         </div>
                         <div class="media-body">
-                            <h1 style="font-size: 35px; text-align: center;">
+                            <h1 style="font-size: 30px; text-align: center;">
                                 <a href="/blog/<%=user.username%>/<%=post._id%>"><%= post.title %></a>
                                 &nbsp;<small><%= recentDate(post.releaseDate, post.modificationDate) %></small>
                             </h1>

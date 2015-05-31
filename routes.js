@@ -51,6 +51,11 @@ module.exports = (app) => {
   app.get('/profile', isLoggedIn, then(async(req, res) => {
     let username = req.user.username
     let posts = await Post.promise.find({username: username})
+
+    if(!posts) {
+      res.render('error.ejs', {message: username + ' has no post yet.'})
+    }
+
     let comments = await Post.promise.find({
       comments: {
         $elemMatch: {
@@ -133,14 +138,12 @@ module.exports = (app) => {
 
       try {
         await post.save()
-        res.redirect('/blog/' + encodeURI(req.user.blogTitle))
+        res.redirect(`/blog/${username}/${post._id}`)
       } catch(e) {
         res.redirect('/')
       }
       return
     }
-
-    console.log("!!!!!!!Submit an existing post, postId: ", postId)
 
     /* Edit an existing post: sumbit */
     let post = await Post.promise.findById(postId)
@@ -170,7 +173,7 @@ module.exports = (app) => {
 
     try {
       await post.save()
-      res.redirect('/blog/' + encodeURI(req.user.blogTitle))
+      res.redirect(`/blog/${username}/${post._id}`)
     } catch(e) {
       console.log(e)
       res.redirect('/')
@@ -187,7 +190,7 @@ module.exports = (app) => {
       res.error('error.ejs', {message: 'There is no post you requested.'})
     }
 
-    await Post.promise.findOneAndRemove(postId)
+    await Post.promise.remove({_id: postId})
     res.redirect('/profile')
   }))
 
@@ -217,7 +220,7 @@ module.exports = (app) => {
   app.get('/blog/:blogger', then(async(req, res) => {
     let blogger = req.params.blogger
     let posts = await Post.promise.find({username: blogger})
-    if(!posts || posts.length === 0) res.render('error.ejs', {message: username + ' has no posts yet.'})
+    if(!posts || posts.length === 0) res.render('error.ejs', {message: blogger + ' has no posts yet.'})
 
     console.log("Finding blog for username[username]: ", blogger)
     console.log("Finding blog for username[result]: ", posts.length)
@@ -326,10 +329,18 @@ module.exports = (app) => {
 
   app.get('/public/:blogger?', then(async(req, res) => {
     let blogger = req.params.blogger
+    let username = req.user ? req.user.username : null
     let user
     let posts
     let comments
     let rating
+
+    if(!blogger & !username) {
+      res.redirect('/profile')
+    }
+    if(!blogger) {
+      res.redirect(`/public/${username}`)
+    }
 
     user = await User.promise.findOne({username: blogger})
     if(!user) {
@@ -367,7 +378,7 @@ module.exports = (app) => {
       blogger: blogger,
       user: user,
       posts: posts,
-      rating: rating[0].score.toFixed(1),
+      rating: rating[0] ? rating[0].score.toFixed(1) : 'N/A',
       comments: comments
     })
   }))
