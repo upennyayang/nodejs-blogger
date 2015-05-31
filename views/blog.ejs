@@ -80,7 +80,7 @@
 
               <input type="hidden" name="blogger" value="<%= blogger %>"></input>
               <input type="hidden" name="postId" value="<%= post._id %>"></input>
-              <textarea rows="4" cols="50"type="text" class="form-control text-editor" name="comment"></textarea>
+              <textarea rows="4" cols="50"type="text" class="form-control" name="comment"></textarea>
               <br>
               <button type="submit" class="btn btn-primary">
                 <% if(!username) { %>Log in &<% } %> Post
@@ -109,10 +109,10 @@
 
                       <%if (username === comment.username) { %>
                         <!-- Edit comment button -->
-                        <a class="pull-right" data-toggle="modal" data-target="#editModal">Edit</a>
+                        <a class="pull-right" data-toggle="modal" data-target="#comment-<%= comment._id %>">Edit</a>
 
                         <!-- Edit comment popover -->
-                        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="comment-<%= comment._id %>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                           <div class="modal-dialog">
                             <div class="modal-content">
                               <div class="modal-header">
@@ -125,7 +125,7 @@
                                     <div class="form-group">
                                       <input type="hidden" name="blogger" value="<%= post.username %>"></input>
                                       <input type="hidden" name="postId" value="<%= post._id %>"></input>
-                                      <input type="text" name="editedComment" class="form-control" value='<%- comment.text %>'>
+                                      <input type="text" name="editedComment" class="form-control" value="<%- comment.text %>">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
