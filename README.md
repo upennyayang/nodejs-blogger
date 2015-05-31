@@ -1,6 +1,6 @@
 ## Blogger
 
-This is a basic Blogger clone to create a blog with comments.
+Build a blogging platform including features like persistent local authentication, account creation, blog posts with unique urls, comments and optionally a rating system.
 
 Time spent: `60h`
 
@@ -31,11 +31,29 @@ Time spent: `60h`
 - [x] Public user profiles show their information, posts and comments
 
 ### Walkthrough
+
+Login & Sign Up 
+
 ![Video Walkthrough](public/walkthroughs/walkthrough-login-signup.gif)
+
+Creating & Editing Post
+
 ![Video Walkthrough](public/walkthroughs/walkthrough-post.gif)
+
+Comment System
+
 ![Video Walkthrough](public/walkthroughs/walkthrough-comment.gif)
+
+Rating System 
+
 ![Video Walkthrough](public/walkthroughs/walkthrough-rating.gif)
+
+Voting System
+
 ![Video Walkthrough](public/walkthroughs/walkthrough-upvote.gif)
+
+Public Profile & Link System
+
 ![Video Walkthrough](public/walkthroughs/walkthrough-public-profile-and-links.gif)
 
 
