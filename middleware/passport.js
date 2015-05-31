@@ -114,7 +114,7 @@ module.exports = (app) => {
     }
 
     // Insert comment
-    let {postId, comment} = req.body
+    let {postId, blogger, comment} = req.body
     console.log(username, postId, comment)
 
 
